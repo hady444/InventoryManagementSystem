@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using DAL.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace DAL
 {
@@ -6,7 +9,7 @@ namespace DAL
     {
         public static IServiceCollection AddDALPr(this IServiceCollection service)
         {
-            // // Implementation goes here
+            service.AddDbContext<PrDBContext>(options=>options.UseInMemoryDatabase("InMemoryDb"));
             return service;
         }
     }
