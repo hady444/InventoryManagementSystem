@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using BLL.Mapper;
+using BLL.Services.Abstraction;
+using BLL.Services.Implementation;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BLL
 {
@@ -6,7 +9,8 @@ namespace BLL
     {
         public static IServiceCollection AddBLLPr(this IServiceCollection service)
         {
-            // Implementation goes here
+            service.AddScoped<IWarehouseService, WarehouseService>();
+            service.AddAutoMapper(a => a.AddProfile(new DomainProfile()));
             return service;
         }
     }

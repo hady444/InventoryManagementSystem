@@ -1,0 +1,88 @@
+﻿@model IEnumerable<DAL.Models.Warehouse>
+<h2>Warehouses</h2>
+
+<a asp-action="Create" class="btn btn-primary mb-3">Add Warehouse</a>
+<a asp-action="Index" asp-controller="Home" class="btn btn-link mb-1">Back to Home</a>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Location</th>
+            <th style="width:220px;">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var w in Model)
+        {
+            <tr>
+                <td>@w.Name</td>
+                <td>@w.Location</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@w.Id" class="btn btn-sm btn-warning">Edit</a>
+                    <a asp-action="Details" asp-route-id="@w.Id" class="btn btn-sm btn-info">Details</a>
+
+                    <form asp-action="Delete" asp-route-id="@w.Id"
+                          method="post" style="display:inline;">
+                        @Html.AntiForgeryToken()
+                        <button type="button"
+                                 class="btn btn-sm btn-danger delete-btn"
+                                 data-id="@w.Id">
+                            Delete
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div id="overlay" style="position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    display: none;
+    z-index: 9998;">
+</div>
+<div id="deleteBox" style="display:none;
+     position:fixed;
+     top:40%;
+     left:50%;
+     transform:translate(-50%, -50%);
+     background:#fff;
+     padding:20px;
+     border-radius:10px;
+     box-shadow:0 0 15px rgba(0,0,0,.3);
+     z-index:9999">
+
+    <p>Are you sure you want to delete this warehouse?</p>
+
+    <button id="confirmDelete" class="btn btn-danger">Yes, Delete</button>
+    <button id="cancelDelete" class="btn btn-secondary">Cancel</button>
+</div>
+@section Scripts {
+    <script>
+        let selectedForm = null;
+
+        $(document).on("click", ".delete-btn", function () {
+            selectedForm = $(this).closest("form");
+
+            $("#overlay").fadeIn(150);
+            $("#deleteBox").fadeIn(200);
+        });
+
+        $("#cancelDelete").on("click", function () {
+            selectedForm = null;
+
+            $("#deleteBox").fadeOut(150);
+            $("#overlay").fadeOut(200);
+        });
+
+        $("#confirmDelete").on("click", function () {
+            if (selectedForm) {
+                selectedForm.submit();
+            }
+        });
+        $("#overlay").on("click", function () {
+            $("#cancelDelete").click();
+        });
+    </script>
+}

@@ -1,7 +1,8 @@
 ﻿using DAL.Data;
+using DAL.Repos.Abstraction;
+using DAL.Repos.Implementation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 
 namespace DAL
 {
@@ -10,6 +11,7 @@ namespace DAL
         public static IServiceCollection AddDALPr(this IServiceCollection service)
         {
             service.AddDbContext<PrDBContext>(options=>options.UseInMemoryDatabase("InMemoryDb"));
+            service.AddScoped<IWarehouseRepository, WarehouseRepository>();
             return service;
         }
     }
