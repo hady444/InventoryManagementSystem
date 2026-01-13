@@ -1,0 +1,21 @@
+﻿@model DAL.Models.Product
+
+<h2>Product Details</h2>
+
+<table class="table table-striped">
+    <tr>
+        <th>Name</th>
+        <td>@Model.Name</td>
+    </tr>
+    <tr>
+        <th>SKU</th>
+        <td>@Model.SKU</td>
+    </tr>
+    <tr>
+        <th>Description</th>
+        <td>@Model.Description</td>
+    </tr>
+</table>
+
+<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+<a asp-action="Index" class="btn btn-secondary">Back</a>

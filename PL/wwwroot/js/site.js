@@ -1,4 +1,24 @@
-﻿// Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿let selectedForm = null;
 
-// Write your JavaScript code.
+$(document).on("click", ".delete-btn", function () {
+    selectedForm = $(this).closest("form");
+
+    $("#overlay").fadeIn(150);
+    $("#deleteBox").fadeIn(200);
+});
+
+$("#cancelDelete").on("click", function () {
+    selectedForm = null;
+
+    $("#deleteBox").fadeOut(150);
+    $("#overlay").fadeOut(200);
+});
+
+$("#confirmDelete").on("click", function () {
+    if (selectedForm) {
+        selectedForm.submit();
+    }
+});
+$("#overlay").on("click", function () {
+    $("#cancelDelete").click();
+});

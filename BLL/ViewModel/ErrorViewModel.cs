@@ -1,4 +1,4 @@
-namespace PL.Models
+namespace BLL.ViewModel
 {
     public class ErrorViewModel
     {

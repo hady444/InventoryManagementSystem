@@ -10,8 +10,8 @@ namespace BLL.Services.Abstraction
     {
         Task<List<Warehouse>> GetAllAsync();
         Task<Warehouse?> GetByIdAsync(int id);
-        Task CreateAsync(CreateWarehouseVM vm);
-        Task<bool> UpdateAsync(int id, CreateWarehouseVM vm);
+        Task<Response> CreateAsync(CreateWarehouseVM vm);
+        Task<Response> UpdateAsync(int id, CreateWarehouseVM vm);
         Task<bool> SoftDeleteAsync(int id);
     }
 }

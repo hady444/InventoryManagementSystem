@@ -27,7 +27,11 @@ namespace DAL.Repos.Implementation
 
         public async Task AddAsync(Warehouse warehouse)
         {
-            await _ctx.Warehouses.AddAsync(warehouse);
+            if (warehouse==null) return;
+            if (await _ctx.Warehouses.AnyAsync(w => w.Name == warehouse.Name))
+                throw new Exception("Name already Exists");
+            else
+                await _ctx.Warehouses.AddAsync(warehouse);
         }
 
         public Task UpdateAsync(Warehouse warehouse)

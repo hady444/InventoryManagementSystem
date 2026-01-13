@@ -12,6 +12,7 @@ namespace DAL
         {
             service.AddDbContext<PrDBContext>(options=>options.UseInMemoryDatabase("InMemoryDb"));
             service.AddScoped<IWarehouseRepository, WarehouseRepository>();
+            service.AddScoped<IProductRepository, ProductRepository>();
             return service;
         }
     }

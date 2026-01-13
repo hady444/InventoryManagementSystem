@@ -31,7 +31,11 @@ namespace PL.Controllers
             if (!ModelState.IsValid)
                 return View(vm);
 
-            await _service.CreateAsync(vm);
+            var response = await _service.CreateAsync(vm);
+            if (!response.success) {
+                ModelState.AddModelError(response.key, response.message);
+                return View(vm);
+            }
             return RedirectToAction(nameof(Index));
         }
 
@@ -57,9 +61,16 @@ namespace PL.Controllers
             if (!ModelState.IsValid)
                 return View(vm);
 
-            var updated = await _service.UpdateAsync(id, vm);
-            if (!updated)
-                return NotFound();
+            var response = await _service.UpdateAsync(id, vm);
+            if (!response.success)
+            {
+                if (response.key != null)
+                {
+                    ModelState.AddModelError(response.key??"", response.message??"");
+                    return View(vm);
+                }
+                    return NotFound();
+            }
 
             return RedirectToAction(nameof(Index));
         }

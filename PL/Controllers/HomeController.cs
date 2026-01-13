@@ -1,5 +1,5 @@
+using BLL.ViewModel;
 using Microsoft.AspNetCore.Mvc;
-using PL.Models;
 using System.Diagnostics;
 
 namespace PL.Controllers

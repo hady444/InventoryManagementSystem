@@ -10,6 +10,7 @@ namespace BLL
         public static IServiceCollection AddBLLPr(this IServiceCollection service)
         {
             service.AddScoped<IWarehouseService, WarehouseService>();
+            service.AddScoped<IProductService, ProductService>();
             service.AddAutoMapper(a => a.AddProfile(new DomainProfile()));
             return service;
         }

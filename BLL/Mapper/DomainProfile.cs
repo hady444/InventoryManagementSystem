@@ -9,6 +9,7 @@ namespace BLL.Mapper
         public DomainProfile()
         {
             CreateMap<Warehouse, CreateWarehouseVM>().ReverseMap();
+            CreateMap<Product, CreateProductVM>().ReverseMap();
         }
     }
 }

@@ -1,0 +1,44 @@
+﻿@model IEnumerable<DAL.Models.Product>
+
+<h2>Products</h2>
+
+<a asp-action="Create" class="btn btn-primary mb-3">Add Product</a>
+<a asp-controller="Home" asp-action="Index" class="btn btn-link mb-3">Back to Home</a>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>SKU</th>
+            <th>Description</th>
+            <th style="width:220px;">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var p in Model)
+        {
+            <tr>
+                <td>@p.Name</td>
+                <td>@p.SKU</td>
+                <td>@p.Description</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@p.Id" class="btn btn-sm btn-warning">Edit</a>
+                    <a asp-action="Details" asp-route-id="@p.Id" class="btn btn-sm btn-info">Details</a>
+
+                    <form asp-action="Delete"
+                          asp-route-id="@p.Id"
+                          method="post"
+                          style="display:inline;">
+                        @Html.AntiForgeryToken()
+                        <button type="button"
+                                class="btn btn-sm btn-danger delete-btn"
+                                data-id="@p.Id">
+                            Delete
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<partial name="_DeleteBox" />

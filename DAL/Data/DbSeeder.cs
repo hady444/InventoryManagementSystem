@@ -1,7 +1,5 @@
 ﻿using DAL.Models;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 
 namespace DAL.Data
 {
@@ -52,6 +50,7 @@ namespace DAL.Data
                 ProductId = product1.Id,
                 WarehouseId = warehouse1.Id,
                 Quantity = 10,
+                Type=TransactionType.OpeningBalance,
                 Notes = "Initial stock"
             },
             new StockTransaction
@@ -59,30 +58,13 @@ namespace DAL.Data
                 ProductId = product2.Id,
                 WarehouseId = warehouse1.Id,
                 Quantity = 50,
+                Type=TransactionType.OpeningBalance,
                 Notes = "Initial stock"
             }
         };
 
             context.StockTransactions.AddRange(transactions);
             context.SaveChanges();
-
-            Console.WriteLine("\n=== All Products ===");
-            foreach (var p in context.Products.IgnoreQueryFilters())
-            {
-                Console.WriteLine($"{p.Id} | {p.Name} | {p.SKU}");
-            }
-
-            Console.WriteLine("\n=== All Warehouses ===");
-            foreach (var w in context.Warehouses.IgnoreQueryFilters())
-            {
-                Console.WriteLine($"{w.Id} | {w.Name}");
-            }
-
-            Console.WriteLine("\n=== Stock Transactions ===");
-            foreach (var t in context.StockTransactions)
-            {
-                Console.WriteLine($"Product:{t.ProductId}, Warehouse:{t.WarehouseId}, Qty:{t.Quantity}");
-            }
         }
     }
 
