@@ -33,7 +33,7 @@ namespace PL.Controllers
 
             var response = await _service.CreateAsync(vm);
             if (!response.success) {
-                ModelState.AddModelError(response.key, response.message);
+                ModelState.AddModelError(response.key??"", response.message??"");
                 return View(vm);
             }
             return RedirectToAction(nameof(Index));

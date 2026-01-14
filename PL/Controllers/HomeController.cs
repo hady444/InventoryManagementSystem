@@ -1,3 +1,4 @@
+using BLL.Services.Abstraction;
 using BLL.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -6,9 +7,16 @@ namespace PL.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        private readonly IStockSummaryService _summaryService;
+
+        public HomeController(IStockSummaryService summaryService)
         {
-            return View();
+            _summaryService = summaryService;
+        }
+        public async Task<IActionResult> Index()
+        {
+            var summary = await _summaryService.GetSummaryAsync();
+            return View(summary);
         }
 
         public IActionResult Privacy()

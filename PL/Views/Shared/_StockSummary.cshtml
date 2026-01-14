@@ -1,0 +1,95 @@
+﻿@model BLL.ViewModel.StockSummaryVM
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-primary shadow-sm h-100 text-center">
+            <div class="card-body">
+                <h5 class="card-title">Total Products</h5>
+                <p class="card-text fs-3">@Model.TotalProducts</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-success shadow-sm h-100 text-center">
+            <div class="card-body">
+                <h5 class="card-title">Total Warehouses</h5>
+                <p class="card-text fs-3">@Model.TotalWarehouses</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-warning shadow-sm h-100 text-center">
+            <div class="card-body">
+                <h5 class="card-title">Total Stock In</h5>
+                <p class="card-text fs-3">@Model.TotalStockIn</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="card text-white bg-danger shadow-sm h-100 text-center">
+            <div class="card-body">
+                <h5 class="card-title">Total Stock Out</h5>
+                <p class="card-text fs-3">@Model.TotalStockOut</p>
+            </div>
+        </div>
+    </div>
+</div>
+@* <div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card p-3">
+            <h5>Total Products</h5>
+            <p>@Model.TotalProducts</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card p-3">
+            <h5>Total Warehouses</h5>
+            <p>@Model.TotalWarehouses</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card p-3">
+            <h5>Total Stock In</h5>
+            <p>@Model.TotalStockIn</p>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card p-3">
+            <h5>Total Stock Out</h5>
+            <p>@Model.TotalStockOut</p>
+        </div>
+    </div>
+        <div class="col-md-3">
+        <div class="card p-3">
+            <h5>Current Stock</h5>
+            <p>@Model.CurrentStock</p>
+        </div>
+    </div>
+</div>
+ *@
+<h4>Low Stock Products (≤5)</h4>
+@if (Model.LowStockProducts.Any())
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Warehouse</th>
+                <th>Quantity</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.LowStockProducts)
+            {
+                <tr>
+                    <td>@item.ProductName</td>
+                    <td>@item.WarehouseName</td>
+                    <td>@item.Quantity</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>All stock levels are sufficient.</p>
+}

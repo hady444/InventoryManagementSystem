@@ -6,10 +6,13 @@
 <h2>Stock Transactions</h2>
 
 <a asp-action="Create" class="btn btn-primary mb-3">Add Transaction</a>
+<a asp-controller="Home" asp-action="Index" class="btn btn-link mb-3">Back to Home</a>
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h2 class="mb-0">Stock Transactions</h2>
-
+    <button type="button" class="btn btn-outline-primary" onclick="location.href='@Url.Action("Index","Summary")'">
+    View Summary
+    </button>
     <div class="d-flex gap-2">
         <select id="warehouseFilter" class="form-select">
             <option value="">All Warehouses</option>

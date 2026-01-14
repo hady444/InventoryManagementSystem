@@ -12,6 +12,7 @@ namespace BLL
             service.AddScoped<IWarehouseService, WarehouseService>();
             service.AddScoped<IProductService, ProductService>();
             service.AddScoped<IStockTransactionSerivce, StockTransactionSerivce>();
+            service.AddScoped<IStockSummaryService, StockSummaryService>();
             service.AddAutoMapper(a => a.AddProfile(new DomainProfile()));
             return service;
         }

@@ -1,8 +1,51 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container-fluid">
+    <div class="jumbotron text-center bg-light p-5 rounded shadow-sm mb-4">
+        <h1 class="display-4">Welcome to Inventory Tracking System</h1>
+        <p class="lead">Manage products, warehouses, and stock transactions</p>
+        <hr class="my-4">
+        <a class="btn btn-primary btn-lg me-2" asp-controller="Product" asp-action="Index">View Products</a>
+        <a class="btn btn-success btn-lg me-2" asp-controller="Warehouse" asp-action="Index">View Warehouses</a>
+        <a class="btn btn-warning btn-lg" asp-controller="Transaction" asp-action="Index">View Transactions</a>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-4 mb-3">
+            <div class="card shadow-sm h-100 text-center">
+                <div class="card-body">
+                    <i class="bi bi-box-seam fs-1 mb-3"></i>
+                    <h5 class="card-title">Add New Product</h5>
+                    <p class="card-text">Add new products to the inventory.</p>
+                    <a class="btn btn-primary" asp-controller="Product" asp-action="Create">Add Product</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card shadow-sm h-100 text-center">
+                <div class="card-body">
+                    <i class="bi bi-building fs-1 mb-3"></i>
+                    <h5 class="card-title">Add New Warehouse</h5>
+                    <p class="card-text">Add warehouse information to manage stock locations.</p>
+                    <a class="btn btn-success" asp-controller="Warehouse" asp-action="Create">Add Warehouse</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card shadow-sm h-100 text-center">
+                <div class="card-body">
+                    <i class="bi bi-arrow-left-right fs-1 mb-3"></i>
+                    <h5 class="card-title">Stock Transactions</h5>
+                    <p class="card-text">Track stock in/out transactions easily.</p>
+                    <a class="btn btn-warning" asp-controller="Transaction" asp-action="Create">Add Transaction</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-4">
+        <partial name="_StockSummary">
+    </div>
 </div>
