@@ -50,7 +50,7 @@ namespace DAL.Data
                 ProductId = product1.Id,
                 WarehouseId = warehouse1.Id,
                 Quantity = 10,
-                Type=TransactionType.OpeningBalance,
+                Type=TransactionType.In,
                 Notes = "Initial stock"
             },
             new StockTransaction
@@ -58,12 +58,28 @@ namespace DAL.Data
                 ProductId = product2.Id,
                 WarehouseId = warehouse1.Id,
                 Quantity = 50,
-                Type=TransactionType.OpeningBalance,
+                Type=TransactionType.In,
                 Notes = "Initial stock"
             }
         };
+            
 
             context.StockTransactions.AddRange(transactions);
+            context.SaveChanges();
+            var warehouseStock1 = new WarehouseStock
+            {
+                ProductId=product1.Id,
+                WarehouseId=warehouse1.Id,
+                Quantity = 10
+            };
+            var warehouseStock2 = new WarehouseStock
+            {
+                ProductId=product2.Id,
+                WarehouseId=warehouse1.Id,
+                Quantity = 50
+            };
+            context.WarehouseStocks.AddRange(warehouseStock1, warehouseStock2);
+
             context.SaveChanges();
         }
     }

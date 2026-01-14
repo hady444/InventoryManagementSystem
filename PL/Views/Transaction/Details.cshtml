@@ -1,0 +1,15 @@
+﻿@model Contract.StockTransactionVM
+@{
+    ViewData["Title"] = "Transaction Details";
+}
+
+<h2>Transaction Details</h2>
+
+<div class="mb-3"><strong>Product:</strong> @Model.ProductName</div>
+<div class="mb-3"><strong>Warehouse:</strong> @Model.WarehouseName</div>
+<div class="mb-3"><strong>Type:</strong> @Model.TransactionType</div>
+<div class="mb-3"><strong>Quantity:</strong> @Model.Quantity</div>
+<div class="mb-3"><strong>Notes:</strong> @Model.Notes</div>
+<div class="mb-3"><strong>Date:</strong> @Model.TransactionDate.ToString("yyyy-MM-dd HH:mm")</div>
+
+<a asp-action="Index" class="btn btn-secondary">Back</a>

@@ -16,7 +16,7 @@ namespace DAL.Models
         public string SKU { get; set; }
         [MaxLength(500)]
         public string? Description { get; set; }
-        public bool IsDeleted { get; set; }
+        public bool IsDeleted { get; set; } = false;
         public DateTime? DeletedAt { get; set; }
         public ICollection<StockTransaction> StockTransactions { get; set; }
     }

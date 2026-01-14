@@ -11,4 +11,8 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Contract\Contract.csproj" />
+  </ItemGroup>
+
 </Project>

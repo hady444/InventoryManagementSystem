@@ -19,5 +19,7 @@ namespace DAL.Models
         public DateTime TransactionDate { get; set; } = DateTime.UtcNow;
 
         public string? Notes { get; set; }
+        public bool IsDeleted { get; set; } = false;
+        public DateTime? DeletedAt { get; set; }
     }
 }

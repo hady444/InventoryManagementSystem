@@ -77,7 +77,7 @@ namespace PL.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Reverse(int id)
         {
             await _service.SoftDeleteAsync(id);
             return RedirectToAction(nameof(Index));
@@ -91,95 +91,5 @@ namespace PL.Controllers
 
             return View(warehouse);
         }
-
-        //public async Task<IActionResult> Index()
-        //{
-        //    var warehouses = await _ctx.Warehouses
-        //        .ToListAsync();
-
-        //    return View(warehouses);
-        //}
-        //public IActionResult Create()
-        //{
-        //    return View();
-        //}
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create(CreateWarehouseVM vm)
-        //{
-        //    if (!ModelState.IsValid)
-        //        return View(vm);
-
-        //    var warehouse = new Warehouse
-        //    {
-        //        Name = vm.Name,
-        //        Location = vm.Location
-        //    };
-
-        //    await _ctx.Warehouses.AddAsync(warehouse);
-        //    await _ctx.SaveChangesAsync();
-
-        //    return RedirectToAction(nameof(Index));
-        //}
-        //public async Task<IActionResult> Edit(int id)
-        //{
-        //    var warehouse = await _ctx.Warehouses
-        //        .FirstOrDefaultAsync(w => w.Id == id);
-
-        //    if (warehouse == null)
-        //        return NotFound();
-
-        //    var vm = new CreateWarehouseVM
-        //    {
-        //        Name = warehouse.Name,
-        //        Location = warehouse.Location
-        //    };
-
-        //    return View(vm);
-        //}
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(int id, CreateWarehouseVM vm)
-        //{
-        //    if (!ModelState.IsValid)
-        //        return View(vm);
-
-        //    var warehouse = await _ctx.Warehouses.FindAsync(id);
-        //    if (warehouse == null)
-        //        return NotFound();
-
-        //    warehouse.Name = vm.Name;
-        //    warehouse.Location = vm.Location;
-
-        //    await _ctx.SaveChangesAsync();
-
-        //    return RedirectToAction(nameof(Index));
-        //}
-
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Delete(int id)
-        //{
-        //    var warehouse = await _ctx.Warehouses.FindAsync(id);
-        //    if (warehouse == null)
-        //        return NotFound();
-
-        //    warehouse.IsDeleted = true;
-        //    warehouse.DeletedAt = DateTime.UtcNow;
-
-        //    await _ctx.SaveChangesAsync();
-
-        //    return RedirectToAction(nameof(Index));
-        //}
-        //public async Task<IActionResult> Details(int id)
-        //{
-        //    var warehouse = await _ctx.Warehouses
-        //        .FirstOrDefaultAsync(w => w.Id == id);
-
-        //    if (warehouse == null)
-        //        return NotFound();
-            
-        //    return View(warehouse);
-        //}
     }
 }

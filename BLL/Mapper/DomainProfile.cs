@@ -10,6 +10,7 @@ namespace BLL.Mapper
         {
             CreateMap<Warehouse, CreateWarehouseVM>().ReverseMap();
             CreateMap<Product, CreateProductVM>().ReverseMap();
+            CreateMap<StockTransaction, CreateTransactionVM>().ReverseMap();
         }
     }
 }
