@@ -1,8 +1,18 @@
-﻿@model IEnumerable<DAL.Models.Warehouse>
-<h2>Warehouses</h2>
-
+﻿@model (Contract.PagedResult<DAL.Models.Warehouse> PagedWarehouses, List<DAL.Models.Warehouse> Warehouses)
+@{
+    var warehouses = Model.PagedWarehouses?.Items?.Any() == true
+        ? Model.PagedWarehouses.Items
+        : Model.Warehouses;
+}
+<a href="/Warehouse" class="text-decoration-none text-reset">
+    <h2>Warehouses</h2>
+</a>
 <a asp-action="Create" class="btn btn-primary mb-3">Add Warehouse</a>
-<a asp-action="Index" asp-controller="Home" class="btn btn-link mb-1">Back to Home</a>
+<a asp-controller="Home" asp-action="Index" class="btn btn-link mb-3">Back to Home</a>
+<button class="btn btn-secondary mb-3"
+        onclick="location.href='@Url.Action("Index", "Warehouse", new { pageNumber = 1, pageSize = 2 })'">
+    Show Pagination
+</button>
 <table class="table table-bordered">
     <thead>
         <tr>
@@ -12,7 +22,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var w in Model)
+        @foreach (var w in warehouses)
         {
             <tr>
                 <td>@w.Name</td>
@@ -23,6 +33,8 @@
 
                     <form asp-action="Delete" asp-route-id="@w.Id"
                           method="post" style="display:inline;">
+                        <input type="hidden" name="pageNumber" value="@Context.Request.Query["pageNumber"]" />
+                        <input type="hidden" name="pageSize" value="@Context.Request.Query["pageSize"]" />
                         @Html.AntiForgeryToken()
                         <button type="button"
                                  class="btn btn-sm btn-danger delete-btn"
@@ -35,4 +47,94 @@
         }
     </tbody>
 </table>
+@if (Model.PagedWarehouses?.TotalPages > 1)
+{
+    var currentPage = Model.PagedWarehouses.PageNumber;
+    var totalPages = Model.PagedWarehouses.TotalPages;
+    var pageSize = Model.PagedWarehouses.PageSize;
+
+    int windowSize = 2; // pages before & after current
+    int startPage = Math.Max(1, currentPage - windowSize);
+    int endPage = Math.Min(totalPages, currentPage + windowSize);
+
+    <nav>
+        <ul class="pagination justify-content-center">
+
+            <!-- Previous -->
+            <li class="page-item @(Model.PagedWarehouses.HasPreviousPage ? "" : "disabled")">
+                <a class="page-link"
+                   asp-action="Index"
+                   asp-route-pageNumber="@(currentPage - 1)"
+                   asp-route-pageSize="@pageSize">
+                    Previous
+                </a>
+            </li>
+
+            <!-- First page -->
+            @if (startPage > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-pageNumber="1"
+                       asp-route-pageSize="@pageSize">
+                        1
+                    </a>
+                </li>
+
+                @if (startPage > 2)
+                {
+                    <li class="page-item disabled">
+                        <span class="page-link">…</span>
+                    </li>
+                }
+            }
+
+            <!-- Page window -->
+            @for (int i = startPage; i <= endPage; i++)
+            {
+                <li class="page-item @(i == currentPage ? "active" : "")">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-pageNumber="@i"
+                       asp-route-pageSize="@pageSize">
+                        @i
+                    </a>
+                </li>
+            }
+
+            <!-- Last page -->
+            @if (endPage < totalPages)
+            {
+                @if (endPage < totalPages - 1)
+                {
+                    <li class="page-item disabled">
+                        <span class="page-link">…</span>
+                    </li>
+                }
+
+                <li class="page-item">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-pageNumber="@totalPages"
+                       asp-route-pageSize="@pageSize">
+                        @totalPages
+                    </a>
+                </li>
+            }
+
+            <!-- Next -->
+            <li class="page-item @(Model.PagedWarehouses.HasNextPage ? "" : "disabled")">
+                <a class="page-link"
+                   asp-action="Index"
+                   asp-route-pageNumber="@(currentPage + 1)"
+                   asp-route-pageSize="@pageSize">
+                    Next
+                </a>
+            </li>
+
+        </ul>
+    </nav>
+}
+
 <partial name="_DeleteBox" />

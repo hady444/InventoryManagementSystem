@@ -22,6 +22,10 @@ namespace BLL.Services.Implementation
         {
             return await _transactionRepo.GetAllAsync(filter);
         }
+        public async Task<PagedResult<StockTransactionVM>> GetTransactions(TransactionFilterVM filter, int pageNumber = 1, int pageSize = 3)
+        {
+            return await _transactionRepo.GetAllAsync(filter, pageNumber, pageSize);
+        }
         public async Task<StockTransaction?> GetByIdAsync(int id)
         {
             return await _transactionRepo.GetByIdAsync(id);
@@ -100,10 +104,13 @@ namespace BLL.Services.Implementation
 
             if (finalStock < 0)
                 return new Response(false, "Quantity", "Insufficient stock");
+            if (transaction.Notes!= null && transaction.Notes.Length > 200) { return new Response(false, "Notes", "max letters length is 200 letter"); }
             stock.Quantity = finalStock;
             transaction.Type = vm.Type;
             transaction.Quantity = vm.Quantity;
             transaction.Notes = vm.Notes;
+            if (vm.Type != transaction.Type || vm.Quantity != transaction.Quantity) 
+                transaction.TransactionDate = DateTime.Now;
             try
             {
                 await _transactionRepo.SaveAsync();

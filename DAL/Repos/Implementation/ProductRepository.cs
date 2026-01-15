@@ -1,4 +1,6 @@
-﻿using DAL.Data;
+﻿using Contract;
+using DAL.Data;
+using DAL.Extensinos;
 using DAL.Models;
 using DAL.Repos.Abstraction;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +19,14 @@ namespace DAL.Repos.Implementation
         public async Task<List<Product>> GetAllAsync()
         {
             return await _ctx.Products.ToListAsync();
+        }
+        public async Task<List<Product>> GetAllNoFilterAsync()
+        {
+            return await _ctx.Products.IgnoreQueryFilters().ToListAsync();
+        }
+        public async Task<PagedResult<Product>> GetAllPagedAsync(int pageNumber=1, int pageSize=3)
+        {
+            return await _ctx.Products.ToPagedResultAsync(pageNumber, pageSize);
         }
 
         public async Task<Product?> GetByIdAsync(int id)

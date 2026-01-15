@@ -1,6 +1,7 @@
 ﻿using BLL.Services.Abstraction;
 using BLL.ViewModel;
 using Contract;
+using DAL.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -18,13 +19,20 @@ namespace PL.Controllers
             _productService = productService;
             _warehouseService = warehouseService;
         }
-        public async Task<IActionResult> Index(TransactionFilterVM? filter)
+        public async Task<IActionResult> Index(TransactionFilterVM? filter, int? pageNumber, int? pageSize)
         {
-            var transactions = await _service.GetTransactions(filter ?? new TransactionFilterVM());
+            PagedResult<StockTransactionVM> pagedTransactions = new PagedResult<StockTransactionVM>();
+            IEnumerable<StockTransactionVM> transactions = new List<StockTransactionVM>();
+            if (pageNumber.HasValue && pageSize.HasValue)
+            {
+                pagedTransactions = await _service.GetTransactions(filter ?? new TransactionFilterVM(), pageNumber.Value, pageSize.Value);
+                await PopulateDropdownsAsync();
+                return View((pagedTransactions, transactions));
+            }
+            transactions = await _service.GetTransactions(filter ?? new TransactionFilterVM());
             await PopulateDropdownsAsync();
-            return View(transactions);
+            return View((pagedTransactions, transactions));
         }
-
         public async Task<IActionResult> Details(int id)
         {
             var transaction = await _service.GetDetailsAsync(id);
@@ -104,7 +112,7 @@ namespace PL.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Reverse(int id)
+        public async Task<IActionResult> Reverse(int id, int? warehouseId, int? productId, int? pageNumber, int? pageSize)
         {
             var response = await _service.SoftDeleteAsync(id);
 
@@ -113,7 +121,7 @@ namespace PL.Controllers
                 TempData["ErrorMessage"] = response.message;
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { warehouseId, productId, pageNumber, pageSize });
         }
         private async Task PopulateDropdownsAsync()
         {

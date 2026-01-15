@@ -1,5 +1,7 @@
 ﻿using BLL.Services.Abstraction;
 using BLL.ViewModel;
+using Contract;
+using DAL.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace PL.Controllers
@@ -13,12 +15,18 @@ namespace PL.Controllers
             _service = service;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? pageNumber, int? pageSize)
         {
-            var warehouses = await _service.GetAllAsync();
-            return View(warehouses);
+            PagedResult<Warehouse> pagedWarehouses = new PagedResult<Warehouse>();
+            List<Warehouse> warehouses = new List<Warehouse>();
+            if (pageNumber.HasValue && pageSize.HasValue)
+            {
+                pagedWarehouses = await _service.GetAllAsync(pageNumber.Value, pageSize.Value);
+                return View((pagedWarehouses, warehouses));
+            }
+            warehouses = await _service.GetAllAsync();
+            return View((pagedWarehouses, warehouses));
         }
-
         public IActionResult Create()
         {
             return View();
@@ -77,10 +85,10 @@ namespace PL.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Reverse(int id)
+        public async Task<IActionResult> Delete(int id, int? pageNumber, int? pageSize)
         {
             await _service.SoftDeleteAsync(id);
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { pageNumber, pageSize });
         }
 
         public async Task<IActionResult> Details(int id)

@@ -1,4 +1,6 @@
-﻿using DAL.Data;
+﻿using Contract;
+using DAL.Data;
+using DAL.Extensinos;
 using DAL.Models;
 using DAL.Repos.Abstraction;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +20,14 @@ namespace DAL.Repos.Implementation
         {
             return await _ctx.Warehouses.ToListAsync();
         }
+        public async Task<List<Warehouse>> GetAllNoFilterAsync()
+        {
+            return await _ctx.Warehouses.IgnoreQueryFilters().ToListAsync();
+        }
+        public async Task<PagedResult<Warehouse>> GetAllPagedAsync(int pageNumber = 1, int pageSize = 3)
+        {
+            return await _ctx.Warehouses.ToPagedResultAsync(pageNumber, pageSize);
+        }
 
         public async Task<Warehouse?> GetByIdAsync(int id)
         {
@@ -28,10 +38,7 @@ namespace DAL.Repos.Implementation
         public async Task AddAsync(Warehouse warehouse)
         {
             if (warehouse==null) return;
-            if (await _ctx.Warehouses.AnyAsync(w => w.Name == warehouse.Name))
-                throw new Exception("Name already Exists");
-            else
-                await _ctx.Warehouses.AddAsync(warehouse);
+            await _ctx.Warehouses.AddAsync(warehouse);
         }
 
         public Task UpdateAsync(Warehouse warehouse)

@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using BLL.Services.Abstraction;
 using BLL.ViewModel;
+using Contract;
+using DAL.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace PL.Controllers
@@ -16,10 +18,17 @@ namespace PL.Controllers
             _mapper = mapper;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? pageNumber,int? pageSize)
         {
-            var products = await _service.GetAllAsync();
-            return View(products);
+            PagedResult<Product> pagedProducts = new PagedResult<Product>();
+            List<Product> products = new List<Product>();
+            if (pageNumber.HasValue && pageSize.HasValue)
+            {
+                pagedProducts = await _service.GetAllAsync(pageNumber.Value, pageSize.Value);
+                return View((pagedProducts, products));
+            }
+            products = await _service.GetAllAsync();
+            return View((pagedProducts, products));
         }
 
         public IActionResult Create()
@@ -76,10 +85,10 @@ namespace PL.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int id, int? pageNumber, int? pageSize)
         {
             await _service.SoftDeleteAsync(id);
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { pageNumber, pageSize});
         }
 
         public async Task<IActionResult> Details(int id)

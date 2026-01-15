@@ -2,6 +2,7 @@
 using AutoMapper;
 using BLL.Services.Abstraction;
 using BLL.ViewModel;
+using Contract;
 using DAL.Models;
 using DAL.Repos.Abstraction;
 
@@ -22,11 +23,16 @@ namespace BLL.Services.Implementation
         {
             return await _repo.GetAllAsync();
         }
+        public async Task<PagedResult<Product>> GetAllAsync(int pageNumber=1, int pageSize=3)
+        {
+            return await _repo.GetAllPagedAsync(pageNumber, pageSize);
+        }
 
         public async Task<Product?> GetByIdAsync(int id)
         {
             return await _repo.GetByIdAsync(id);
         }
+
 
         public async Task<Response> CreateAsync(CreateProductVM vm)
         {
@@ -34,6 +40,9 @@ namespace BLL.Services.Implementation
             if (vm.Name.Length > 150) return new Response( false, "Name", "Name is too big - Max 150");
             if (vm.SKU.Length > 50) return new Response(false, "SKU", "SKU is too big - Max 50");
             if (vm.Description != null && vm.Description.Length > 500) return new Response(false, "Description", "Description is too big -  Max 500");
+            var prds = await _repo.GetAllNoFilterAsync();
+            var check = prds.Any(p => p.SKU == vm.SKU);
+            if (check) return new Response(false, "SKU","this SKU is already used");
             var product = _mapper.Map<Product>(vm);
             try
             {
@@ -54,6 +63,11 @@ namespace BLL.Services.Implementation
             if (vm == null) return new Response(false, null, null);
             if (vm.Name.Length > 150) return new Response(false, "Name", "Name is too big - Max 150");
             if (vm.SKU.Length > 50) return new Response(false, "SKU", "SKU is too big - Max 50");
+            if (product.SKU != vm.SKU)
+            {
+                var prds = await _repo.GetAllNoFilterAsync();
+                if (prds.Any(p=>p.SKU == vm.SKU)) { return new Response(false, "SKU", "SKU already exists"); }
+            }
             if (vm.Description != null && vm.Description.Length > 500) return new Response(false, "Description", "Description is too big -  Max 500");
             product.Name = vm.Name;
             product.SKU = vm.SKU;

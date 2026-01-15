@@ -1,6 +1,7 @@
 ﻿
 using Contract;
 using DAL.Data;
+using DAL.Extensinos;
 using DAL.Models;
 using DAL.Repos.Abstraction;
 using Microsoft.EntityFrameworkCore;
@@ -35,6 +36,28 @@ namespace DAL.Repos.Implementation
                 Notes = t.Notes,
                 TransactionDate = t.TransactionDate
             }).ToListAsync();
+        }
+        public async Task<PagedResult<StockTransactionVM>> GetAllAsync(TransactionFilterVM filter, int pageNumber=1, int pageSize=3)
+        {
+            var query = _ctx.StockTransactions.AsNoTracking().AsQueryable();
+            if (filter.ProductId.HasValue)
+            {
+                query= query.Where(t => t.ProductId == filter.ProductId);
+            }
+            if (filter.WarehouseId.HasValue)
+            {
+                query= query.Where(t => t.WarehouseId == filter.WarehouseId);
+            }
+            return await query.Select(t => new StockTransactionVM
+            {
+                Id = t.Id,
+                Quantity = t.Quantity,
+                TransactionType = t.Type.ToString(),
+                ProductName = t.Product.Name,
+                WarehouseName = t.Warehouse.Name,
+                Notes = t.Notes,
+                TransactionDate = t.TransactionDate
+            }).ToPagedResultAsync(pageNumber, pageSize);
         }
         public async Task CreateAsync(StockTransaction trans)
         {

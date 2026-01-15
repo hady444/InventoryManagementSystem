@@ -17,7 +17,7 @@ namespace DAL.Models
         public int Quantity { get; set; }
 
         public DateTime TransactionDate { get; set; } = DateTime.UtcNow;
-
+        [MaxLength(500)]
         public string? Notes { get; set; }
         public bool IsDeleted { get; set; } = false;
         public DateTime? DeletedAt { get; set; }

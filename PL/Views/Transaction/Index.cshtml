@@ -1,12 +1,21 @@
-﻿@model IEnumerable<Contract.StockTransactionVM>
+﻿@model (Contract.PagedResult<Contract.StockTransactionVM> PagedTransactions, IEnumerable<Contract.StockTransactionVM> Transactions)
 @{
     ViewData["Title"] = "Stock Transactions";
+
+    var transactions = Model.PagedTransactions?.Items?.Any() == true
+        ? Model.PagedTransactions.Items
+        : Model.Transactions;
 }
 
-<h2>Stock Transactions</h2>
-
+<a href="/Transaction" class="text-decoration-none text-reset">
+    <h2>Transactions</h2>
+</a>
 <a asp-action="Create" class="btn btn-primary mb-3">Add Transaction</a>
 <a asp-controller="Home" asp-action="Index" class="btn btn-link mb-3">Back to Home</a>
+<button class="btn btn-secondary mb-3"
+        onclick="location.href='@Url.Action("Index", "Transaction", new { pageNumber = 1, pageSize = 5 })'">
+    Show Pagination
+</button>
 
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h2 class="mb-0">Stock Transactions</h2>
@@ -27,7 +36,7 @@
         </select>
 
         <select id="productFilter" class="form-select">
-            <option value="">All Products</option>
+            <option value="">All Transactions</option>
             @foreach (var p in ViewBag.Products)
             {
                 <option value="@p.Value"
@@ -46,7 +55,7 @@
 <table class="table table-bordered">
     <thead>
         <tr>
-            <th>Product</th>
+            <th>Transaction</th>
             <th>Warehouse</th>
             <th>Type</th>
             <th>Quantity</th>
@@ -56,7 +65,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var t in Model)
+        @foreach (var t in transactions)
         {
             <tr>
                 <td>@t.ProductName</td>
@@ -71,6 +80,10 @@
 
                     <form asp-action="Reverse" asp-route-id="@t.Id" method="post" style="display:inline;">
                         @Html.AntiForgeryToken()
+                        <input type="hidden" name="warehouseId" value="@Context.Request.Query["warehouseId"]" />
+                        <input type="hidden" name="productId" value="@Context.Request.Query["productId"]" />
+                        <input type="hidden" name="pageNumber" value="@Context.Request.Query["pageNumber"]" />
+                        <input type="hidden" name="pageSize" value="@Context.Request.Query["pageSize"]" />
                         <button type="button" class="btn btn-sm btn-danger delete-btn" data-id="@t.Id">Reverse</button>
                     </form>
                 </td>
@@ -78,6 +91,104 @@
         }
     </tbody>
 </table>
+
+@if (Model.PagedTransactions?.TotalPages > 1)
+{
+    var currentPage = Model.PagedTransactions.PageNumber;
+    var totalPages = Model.PagedTransactions.TotalPages;
+    var pageSize = Model.PagedTransactions.PageSize;
+    var routeAll = new Dictionary<string, string?>()
+    {
+        ["pageSize"] = pageSize.ToString(),
+        ["productId"] = Context.Request.Query["productId"].FirstOrDefault(),
+        ["warehouseId"] = Context.Request.Query["warehouseId"].FirstOrDefault()
+    };
+    int windowSize = 2; // pages before & after current
+    int startPage = Math.Max(1, currentPage - windowSize);
+    int endPage = Math.Min(totalPages, currentPage + windowSize);
+
+    <nav>
+        <ul class="pagination justify-content-center">
+
+            <!-- Previous -->
+            <li class="page-item @(Model.PagedTransactions.HasPreviousPage ? "" : "disabled")">
+                <a class="page-link"
+                   asp-action="Index"
+                   asp-all-route-data="routeAll"
+                   asp-route-pageNumber="@(currentPage - 1)">
+                    Previous
+                </a>
+            </li>
+
+            <!-- First page -->
+            @if (startPage > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-route-pageNumber="1"
+                       asp-route-pageSize="@pageSize">
+                        1
+                    </a>
+                </li>
+
+                @if (startPage > 2)
+                {
+                    <li class="page-item disabled">
+                        <span class="page-link">…</span>
+                    </li>
+                }
+            }
+
+            <!-- Page window -->
+            @for (int i = startPage; i <= endPage; i++)
+            {
+                <li class="page-item @(i == currentPage ? "active" : "")">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-all-route-data="routeAll"
+                       asp-route-pageNumber="@i">
+                        @i
+                    </a>
+
+                </li>
+            }
+
+            <!-- Last page -->
+            @if (endPage < totalPages)
+            {
+                @if (endPage < totalPages - 1)
+                {
+                    <li class="page-item disabled">
+                        <span class="page-link">…</span>
+                    </li>
+                }
+
+                <li class="page-item">
+                    <a class="page-link"
+                       asp-action="Index"
+                       asp-all-route-data="routeAll"
+                       asp-route-pageNumber="@totalPages">
+                        @totalPages
+                    </a>
+                </li>
+            }
+
+            <!-- Next -->
+            <li class="page-item @(Model.PagedTransactions.HasNextPage ? "" : "disabled")">
+                <a class="page-link"
+                   asp-action="Index"
+                   asp-all-route-data="routeAll"
+                   asp-route-pageNumber="@(currentPage + 1)">
+                    Next
+                </a>
+            </li>
+
+        </ul>
+    </nav>
+}
+
+
 <partial name="_DeleteBox">
 @section Scripts {
 <script>
@@ -85,16 +196,28 @@
     const warehouseId = $("#warehouseFilter").val();
     const productId = $("#productFilter").val();
 
-    const params = new URLSearchParams();
+    const params = new URLSearchParams(window.location.search);
+    // Update or remove warehouseId
+    if (warehouseId)
+        params.set("warehouseId", warehouseId);
+    else
+        params.delete("warehouseId");
 
-    if (warehouseId !== "")
-        params.append("warehouseId", warehouseId);
+    // Update or remove productId
+    if (productId)
+        params.set("productId", productId);
+    else
+        params.delete("productId");
 
-    if (productId !== "") 
-        params.append("productId", productId);
+    // Reset pageNumber when filters change (important!)
+    if (params.has("pageNumber")) {
+        params.set("pageNumber", 1);
+    }
+    if (params.has("pageSize")) {
+        params.set("pageSize", 5);
+    }
 
-    const query = params.toString();
-    window.location.href = query ? "?" + query : window.location.pathname;
+    window.location.href = "?" + params.toString();
 }
 
 $("#warehouseFilter, #productFilter").on("change", applyFilters);
